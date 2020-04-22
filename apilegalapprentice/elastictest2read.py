@@ -115,8 +115,8 @@ def elasticsearch_query():
     ## print(res)
 
     #THESE TWO LINES PRINT THE PROPERTIES SPECIFIED FOR ALL THE HITS
-    #for hit in res['hits']['hits']:
-        #print(hit["_source"])
+    for hit in res['hits']['hits']:
+        print(hit["_source"])
 
 # https://www.elastic.co/guide/en/elasticsearch/reference/current/search-request-body.html
 
