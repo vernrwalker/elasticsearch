@@ -18,11 +18,15 @@ def legal_apprentice_pickler():
     # Imports of import.
     import json
     import os
-    import pandas as pd  
+    import pandas as pd 
+    from elasticsearch import Elasticsearch 
         
+    es = Elasticsearch()
+    
+    indexName = 'la-attriblevel-50cases'
 
     # Getting the list of files in <data_path>:
-    data_path = './data/Pickling/'
+    data_path = './data/CURATED-BVA-Decisions/'
     list_of_files = os.listdir(data_path)
 
     # ...and creating new lists for the texts of the sentences...
@@ -43,8 +47,8 @@ def legal_apprentice_pickler():
 
         # ...and adding the sentences to those new lists...
         for sentence in data['sentences']:
-            sentenceNumber = int(sentence['sentenceNumber'])
-            paragraphNumber = int(sentence['paragraphNumber'])
+            #sentenceNumber = int(sentence['sentenceNumber'])
+            #paragraphNumber = int(sentence['paragraphNumber'])
             
             # ...assigning the attributions values to a python list
             attribList = sentence.get('attributions')
@@ -76,15 +80,17 @@ def legal_apprentice_pickler():
                         'sentText': sentence['text'],
                     }
                     df_attributions.append(attrecord)
+                    resultAttribIndex = es.index(index=indexName, id=index, body=attrecord)
 
+                    index += 1
             
             record = {
                 'index': index,
                 'sentID' : sentence['sentID'],
                 'caseNumber' : sentence['caseNumber'],
-                'sentenceNumber' : sentenceNumber,
-                'paragraphNumber' : paragraphNumber,
-                'isFirst': sentenceNumber == 1,
+                #'sentenceNumber' : sentenceNumber,
+                #'paragraphNumber' : paragraphNumber,
+                #'isFirst': sentenceNumber == 1,
                 'isLast': False,
                 'rhetClass': sentence['rhetClass'],
                 'text': sentence['text'],
